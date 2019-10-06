@@ -4,8 +4,8 @@
 //
 //
 //
-// Version:         $Revision: 10569 $,
-//                  $Date: 2019-04-01 16:00:29 +0300 (ma, 01 huhti 2019) $
+// Version:         $Revision: 10764 $,
+//                  $Date: 2019-06-04 11:01:51 +0300 (ti, 04 kesä 2019) $
 //                  $Author: gurux01 $
 //
 // Copyright (c) Gurux Ltd
@@ -30,7 +30,6 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 
-
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -41,47 +40,12 @@ using Gurux.Common;
 using System.Deployment.Application;
 using Microsoft.Win32;
 using System.Diagnostics;
-using System.ComponentModel;
 using Gurux.DLMS;
 
 namespace GXDLMSDirector
 {
     static class Program
     {
-        /// <summary>
-        /// Load medias from the directory.
-        /// </summary>
-        /// <param name="di">Directory info.</param>
-        static void LoadMedias(DirectoryInfo di)
-        {
-            if (di.Exists)
-            {
-                foreach (FileInfo file in di.GetFiles("*.dll"))
-                {
-                    try
-                    {
-                        if (string.Compare(file.Name, "Gurux.Common.dll", true) == 0)
-                        {
-                            continue;
-                        }
-                        Assembly assembly = Assembly.LoadFile(file.FullName);
-                        foreach (Type type in assembly.GetTypes())
-                        {
-                            if (!type.IsAbstract && type.IsClass &&
-                                (typeof(IGXMedia).IsAssignableFrom(type)) || typeof(IGXDataConcentrator).IsAssignableFrom(type))
-                            {
-                                assembly.CreateInstance(type.ToString());
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-        }
-
         static void OnAsyncStateChange(object sender, GXAsyncWork work, object[] parameters, AsyncState state, string text)
         {
         }
@@ -177,6 +141,17 @@ namespace GXDLMSDirector
                         Properties.Settings.Default.Save();
                         Gurux.DLMS.UI.GXDlmsUi.Upgrade();
                     }
+#if (NET46)
+                    //This is needed to make Gurux.MQTT visible.
+                    try
+                    {
+                        new Gurux.MQTT.GXMqtt();
+                    }
+                    catch(Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                    }
+#endif
 
                     string initDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GXDLMSDirector");
                     if (!Directory.Exists(initDir))
@@ -192,16 +167,20 @@ namespace GXDLMSDirector
                             Directory.CreateDirectory(medias);
                         }
                         DirectoryInfo di = new DirectoryInfo(updates);
-                        foreach (FileInfo it in di.GetFiles("*.dll"))
+                        foreach (string it in Properties.Settings.Default.ExternalMedias.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
                         {
-                            try
+                            FileInfo fi = new FileInfo(Path.Combine(updates, Path.GetFileName(it)));
+                            if (fi.Exists)
                             {
-                                File.Copy(it.FullName, Path.Combine(medias, it.Name), true);
-                                File.Delete(it.FullName);
-                            }
-                            catch (Exception ex)
-                            {
-                                System.Diagnostics.Debug.WriteLine(ex.Message);
+                                try
+                                {
+                                    File.Copy(fi.FullName, Path.Combine(medias, fi.Name), true);
+                                    File.Delete(fi.FullName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                                }
                             }
                         }
                     }
@@ -210,7 +189,6 @@ namespace GXDLMSDirector
                     {
                         SetAddRemoveProgramsIcon();
                         Directory.SetCurrentDirectory(initDir);
-                        LoadMedias(new DirectoryInfo(medias));
                         //Load external medias.
                         List<string> missingMedias = new List<string>();
                         List<string> downloadedMedias = new List<string>();

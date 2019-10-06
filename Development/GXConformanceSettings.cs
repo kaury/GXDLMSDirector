@@ -25,7 +25,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the GNU General Public License for more details.
 //
-// More information of Gurux DLMS/COSEM Director: http://www.gurux.org/GXDLMSDirector
+// More information of Gurux DLMS/COSEM Director: https://www.gurux.org/GXDLMSDirector
 //
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
@@ -483,17 +483,46 @@ namespace GXDLMSDirector
             }
         }
 
-
         /// <summary>
-        /// Are tests run from command line.
+        /// Is application closed after tests are run.
         /// </summary>
-        [DefaultValue(false)]
+        /// <remarks>
+        /// This can be used when tests are run from command line.
+        /// </remarks>
         [Browsable(false)]
         [XmlIgnore]
-        public bool CommandLine
+        public CloseApp CloseApplication
         {
             get;
             set;
         }
+
+#if DEBUG
+        [Description("Exclude clock Tests.")]
+        [DefaultValue(false)]
+        [Category("Accessibility")]
+        public bool ExcludeClockTests
+        {
+            get;
+            set;
+
+        }
+#endif //DEBUG
+    }
+
+    public enum CloseApp
+    {
+        /// <summary>
+        /// Application is newer close.
+        /// </summary>
+        Never,
+        /// <summary>
+        /// Application is always closed.
+        /// </summary>
+        Always,
+        /// <summary>
+        /// Application is closed if all tests succeeded.
+        /// </summary>
+        Success
     }
 }

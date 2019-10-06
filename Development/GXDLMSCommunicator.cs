@@ -4,8 +4,8 @@
 //
 //
 //
-// Version:         $Revision: 10569 $,
-//                  $Date: 2019-04-01 16:00:29 +0300 (ma, 01 huhti 2019) $
+// Version:         $Revision: 10970 $,
+//                  $Date: 2019-09-10 11:12:32 +0300 (ti, 10 syys 2019) $
 //                  $Author: gurux01 $
 //
 // Copyright (c) Gurux Ltd
@@ -24,7 +24,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the GNU General Public License for more details.
 //
-// More information of Gurux DLMS/COSEM Director: http://www.gurux.org/GXDLMSDirector
+// More information of Gurux DLMS/COSEM Director: https://www.gurux.org/GXDLMSDirector
 //
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
@@ -196,7 +196,7 @@ namespace GXDLMSDirector
                     try
                     {
                         //Release is call only for secured connections.
-                        //Add meters are not supporting Release and it's causing problems.
+                        //All meters are not supporting Release and it's causing problems.
                         if (client.InterfaceType == InterfaceType.WRAPPER ||
                             (client.InterfaceType == InterfaceType.HDLC && client.Ciphering.Security != Security.None && !parent.PreEstablished))
                         {
@@ -214,7 +214,7 @@ namespace GXDLMSDirector
                     try
                     {
                         reply.Clear();
-                        if (!(client.InterfaceType == InterfaceType.WRAPPER && parent.PreEstablished))
+                        if (client.InterfaceType == InterfaceType.HDLC && !parent.PreEstablished)
                         {
                             ReadDataBlock(DisconnectRequest(true), "Disconnect request", reply);
                         }
@@ -509,7 +509,7 @@ namespace GXDLMSDirector
                 {
                     data = "/?" + this.parent.PhysicalAddress + "!\r\n";
                 }
-                GXLogWriter.WriteLog("HDLC sending:" + data);
+                GXLogWriter.WriteLog("IEC Sending:" + data);
                 ReceiveParameters<string> p = new ReceiveParameters<string>()
                 {
                     AllData = false,
@@ -1570,11 +1570,10 @@ namespace GXDLMSDirector
                         byte[] data = client.Read(obj, it)[0];
                         ReadDataBlock(data, "Read object type " + obj.ObjectType, reply);
                         type = reply.DataType;
-                        if (type == DataType.None)
+                        if (type != DataType.None)
                         {
-                            throw new Exception("Failed to write value. Data type not set.");
+                            obj.SetDataType(it, type);
                         }
-                        obj.SetDataType(it, type);
                         reply.Clear();
                     }
                     try
@@ -1628,14 +1627,10 @@ namespace GXDLMSDirector
             foreach (byte[] it in data)
             {
                 ReadDataBlock(it, "", 1, 1, reply);
-                if (list.Count != 1 && reply.Value is object[])
+                //Value is null if data is send in multiple frames.
+                if (reply.Value is List<object>)
                 {
-                    values.AddRange((object[])reply.Value);
-                }
-                else if (reply.Value != null)
-                {
-                    //Value is null if data is send in multiple frames.
-                    values.Add(reply.Value);
+                    values.AddRange((List<object>)reply.Value);
                 }
                 reply.Clear();
             }
@@ -1646,7 +1641,7 @@ namespace GXDLMSDirector
             client.UpdateValues(list, values);
         }
 
-        public void ReadValue(GXDLMSObject it, int attributeOrdinal)
+        public object ReadValue(GXDLMSObject it, int attributeOrdinal)
         {
             GXReplyData reply = new GXReplyData();
             string str = string.Format("Reading object {0}, interface {1}", it.LogicalName, it.ObjectType);
@@ -1657,6 +1652,7 @@ namespace GXDLMSDirector
                 it.SetDataType(attributeOrdinal, reply.DataType);
             }
             client.UpdateValue(it, attributeOrdinal, reply.Value);
+            return reply.Value;
         }
 
         public void GetProfileGenericColumns(GXDLMSProfileGeneric item)

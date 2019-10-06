@@ -5,8 +5,8 @@
 //
 //
 //
-// Version:         $Revision: 10569 $,
-//                  $Date: 2019-04-01 16:00:29 +0300 (ma, 01 huhti 2019) $
+// Version:         $Revision: 10926 $,
+//                  $Date: 2019-08-22 09:32:57 +0300 (to, 22 elo 2019) $
 //                  $Author: gurux01 $
 //
 // Copyright (c) Gurux Ltd
@@ -25,7 +25,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the GNU General Public License for more details.
 //
-// More information of Gurux DLMS/COSEM Director: http://www.gurux.org/GXDLMSDirector
+// More information of Gurux DLMS/COSEM Director: https://www.gurux.org/GXDLMSDirector
 //
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
@@ -75,9 +75,13 @@ namespace GXDLMSDirector
                 {
                     StandardCb.Items.Add(it);
                 }
-                foreach (object it in Enum.GetValues(typeof(InterfaceType)))
+                foreach (InterfaceType it in Enum.GetValues(typeof(InterfaceType)))
                 {
-                    InterfaceCb.Items.Add(it);
+                    if (it != InterfaceType.PDU)
+                    {
+                        InterfaceCb.Items.Add(it);
+                    }
+
                 }
 
 
@@ -271,7 +275,7 @@ namespace GXDLMSDirector
                 }
             }
 
-            //Select first media if medis is not selected.
+            //Select first media if media is not selected.
             if (SelectedMedia == null)
             {
                 SelectedMedia = (Gurux.Common.IGXMedia)this.MediasCB.Items[0];
@@ -1383,7 +1387,7 @@ namespace GXDLMSDirector
         {
             try
             {
-                System.Diagnostics.Process.Start("http://www.gurux.fi/index.php?q=GXDLMSDirectorExample");
+                System.Diagnostics.Process.Start("https://www.gurux.fi/index.php?q=GXDLMSDirectorExample");
             }
             catch (Exception Ex)
             {
@@ -1611,7 +1615,7 @@ namespace GXDLMSDirector
                 {
                     using (MemoryStream ms = new MemoryStream())
                     {
-                        List<Type> types = new List<Type>();
+                        List<Type> types = new List<Type>(GXDLMSClient.GetObjectTypes());
                         types.Add(typeof(GXDLMSAttributeSettings));
                         types.Add(typeof(GXDLMSAttribute));
                         XmlAttributeOverrides overrides = new XmlAttributeOverrides();
@@ -1799,6 +1803,21 @@ namespace GXDLMSDirector
                 MaxInfoTXLbl.Text = "Max payload size in transmit";
                 MaxInfoRXLbl.Text = "Max payload size in receive";
             }
+        }
+
+        private void InterfaceCb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            InterfaceType type = (InterfaceType)InterfaceCb.SelectedItem;
+            if (type == InterfaceType.WRAPPER)
+            {
+                PhysicalServerAddressLbl.Text = "Logical device:";
+            }
+            else
+            {
+                PhysicalServerAddressLbl.Text = "Physical Server:";
+            }
+            LogicalServerAddressLbl.Visible = LogicalServerAddressTB.Visible = type == InterfaceType.HDLC;
+
         }
     }
 }

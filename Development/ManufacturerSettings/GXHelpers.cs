@@ -48,7 +48,7 @@ namespace GXDLMS.Common
             }
             if (type == DataType.None)
             {
-                if (arrayAsString && data != null && data.GetType().IsArray)
+                if (arrayAsString && data != null && (data is List<object> || data.GetType().IsArray))
                 {
                     data = GXHelpers.GetArrayAsString(data);
                 }
@@ -215,7 +215,28 @@ namespace GXDLMS.Common
 
         static public string GetArrayAsString(object data)
         {
-            System.Collections.IEnumerable arr = (System.Collections.IEnumerable)data;
+            if (data is byte[])
+            {
+                return Gurux.Common.GXCommon.ToHex((byte[])data);
+            }
+            List<object> arr;
+            if (data is List<object>)
+            {
+                arr = (List<object>)data;
+            }
+            else if (data is object[])
+            {
+                arr = new List<object>();
+                arr.AddRange((object[])data);
+            }
+            else
+            {
+                arr = new List<object>();
+                foreach (object it in (System.Collections.IEnumerable) data)
+                {
+                    arr.Add(it);
+                }
+            }
             string str = null;
             foreach (object it in arr)
             {
@@ -227,10 +248,10 @@ namespace GXDLMS.Common
                 {
                     str += ", ";
                 }
-                if (it != null && it.GetType().IsArray)
+                if (it != null && (it is List<object> || it.GetType().IsArray))
                 {
                     str += GetArrayAsString(it);
-                }                
+                }
                 else
                 {
                     str += Convert.ToString(it);

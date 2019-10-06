@@ -4,8 +4,8 @@
 //
 //
 //
-// Version:         $Revision: 10419 $,
-//                  $Date: 2018-11-23 13:12:56 +0200 (Fri, 23 Nov 2018) $
+// Version:         $Revision: 10795 $,
+//                  $Date: 2019-06-13 11:14:08 +0300 (to, 13 kesä 2019) $
 //                  $Author: gurux01 $
 //
 // Copyright (c) Gurux Ltd
@@ -24,7 +24,7 @@
 // MERCgHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the GNU General Public License for more details.
 //
-// More information of Gurux DLMS/COSEM Director: http://www.gurux.org/GXDLMSDirector
+// More information of Gurux DLMS/COSEM Director: https://www.gurux.org/GXDLMSDirector
 //
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
@@ -301,6 +301,10 @@ namespace GXDLMSDirector
                             }
                         }
                     }
+                    if (type == null)
+                    {
+                        throw new Exception("Invalid media type: " + value);
+                    }
                     communicator.media = (IGXMedia)Activator.CreateInstance(type);
                 }
             }
@@ -374,7 +378,7 @@ namespace GXDLMSDirector
                     Comm.GetProfileGenericColumns(item);
                     if (Standard == Standard.Italy && item.CaptureObjects.Count == 0)
                     {
-                        cols = GetColumns(Comm.client.Objects, Comm.client.CustomObisCodes, item.LogicalName);
+                        cols = GetColumns(Comm.client.Objects, Comm.client.CustomObisCodes, item.LogicalName, 0);
                         GXDLMSConverter c = new GXDLMSConverter(Standard);
                         foreach (var it in cols)
                         {
@@ -387,7 +391,28 @@ namespace GXDLMSDirector
                 {
                     if (Standard == Standard.Italy)
                     {
-                        cols = GetColumns(Comm.client.Objects, Comm.client.CustomObisCodes, item.LogicalName);
+                        GXDLMSData obj = Comm.client.Objects.FindByLN(ObjectType.Data, "0.0.96.1.3.255") as GXDLMSData;
+                        int type = 0;
+                        if (obj != null)
+                        {
+                            if (obj.Value == null)
+                            {
+                                try
+                                {
+                                    Comm.ReadValue(obj, 2);
+                                    type = Convert.ToInt16(obj.Value);
+                                }
+                                catch (Exception)
+                                {
+                                    type = 0;
+                                }
+                            }
+                            else
+                            {
+                                type = Convert.ToInt16(obj.Value);
+                            }
+                        }
+                        cols = GetColumns(Comm.client.Objects, Comm.client.CustomObisCodes, item.LogicalName, type);
                         item.CaptureObjects.Clear();
                         GXDLMSConverter c = new GXDLMSConverter(Standard);
                         foreach (var it in cols)
@@ -438,41 +463,48 @@ namespace GXDLMSDirector
             return new GXKeyValuePair<GXDLMSObject, GXDLMSCaptureObject>(obj, new GXDLMSCaptureObject(index, 0));
         }
 
-        private static List<GXKeyValuePair<GXDLMSObject, GXDLMSCaptureObject>> GetColumns(GXDLMSObjectCollection objects, GXObisCodeCollection obisCodes, string ln)
+        private static List<GXKeyValuePair<GXDLMSObject, GXDLMSCaptureObject>> GetColumns(GXDLMSObjectCollection objects, GXObisCodeCollection obisCodes, string ln, int type)
         {
             List<GXKeyValuePair<GXDLMSObject, GXDLMSCaptureObject>> list = new List<GXKeyValuePair<GXDLMSObject, GXDLMSCaptureObject>>();
             //Event Logbook
             if (ln == "7.0.99.98.0.255")
             {
-                /*
                 //If meter.
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.15.2.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.11.2.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "7.1.96.5.1.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.AssociationLogicalName, "0.0.40.0.0.255", 11));
-    */
-                //If concentrator.
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.15.2.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.11.2.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.AssociationLogicalName, "0.0.40.0.0.255", 11));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.GSMDiagnostic, "0.0.25.6.0.255", 5));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.GSMDiagnostic, "0.0.25.6.0.255", 6));
-
+                if (type == 2)
+                {
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.15.2.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.11.2.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "7.1.96.5.1.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.AssociationLogicalName, "0.0.40.0.0.255", 11));
+                }
+                else
+                {
+                    //If concentrator.
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.15.2.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.96.11.2.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.AssociationLogicalName, "0.0.40.0.0.255", 11));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.GSMDiagnostic, "0.0.25.6.0.255", 5));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.GSMDiagnostic, "0.0.25.6.0.255", 6));
+                }
             }
             else if (ln == "7.0.99.99.3.255")
             {
-                /*
                 //If meter.
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "7.1.96.5.1.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Register,"7.0.13.2.0.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Register,"7.0.12.2.0.255", 2));
-*/
-                //If concentrator.
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
-                list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "7.1.96.5.1.255", 2));
+                if (type == 2)
+                {
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "7.1.96.5.1.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Register, "7.0.13.2.0.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Register, "7.0.12.2.0.255", 2));
+                }
+                else
+                {
+                    //If concentrator.
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "0.0.1.1.0.255", 2));
+                    list.Add(CreateColumn(objects, obisCodes, ObjectType.Data, "7.1.96.5.1.255", 2));
+                }
             }
             else if (ln == "7.0.99.98.1.255")
             {
@@ -628,79 +660,6 @@ namespace GXDLMSDirector
                 GXLogWriter.WriteLog("--- Created " + Objects.Count.ToString() + " objects. ---");
                 //Read registers units and scalers.
                 int cnt = Objects.Count;
-                GXLogWriter.WriteLog("--- Reading scalers and units. ---");
-                for (pos = 0; pos != cnt; ++pos)
-                {
-                    GXDLMSObject it = Objects[pos];
-                    this.OnProgress(this, "Reading scalers and units.", cnt + pos + 1, 3 * cnt);
-                    if (it is GXDLMSRegister)
-                    {
-                        //Read scaler first.
-                        try
-                        {
-                            Comm.ReadValue(it, 3);
-                        }
-                        catch (Exception ex)
-                        {
-                            GXLogWriter.WriteLog(ex.Message);
-                            it.SetAccess(3, AccessMode.NoAccess);
-                            if (ex is GXDLMSException)
-                            {
-                                continue;
-                            }
-                            throw ex;
-                        }
-                    }
-                    if (it is GXDLMSDemandRegister)
-                    {
-                        //Read scaler first.
-                        try
-                        {
-                            Comm.ReadValue(it, 4);
-                        }
-                        catch (Exception ex)
-                        {
-                            GXLogWriter.WriteLog(ex.Message);
-                            UpdateError(it, 4, ex);
-                            if (ex is GXDLMSException)
-                            {
-                                continue;
-                            }
-                            throw ex;
-                        }
-                        //Read Period
-                        try
-                        {
-                            Comm.ReadValue(it, 8);
-                        }
-                        catch (Exception ex)
-                        {
-                            GXLogWriter.WriteLog(ex.Message);
-                            UpdateError(it, 8, ex);
-                            if (ex is GXDLMSException)
-                            {
-                                continue;
-                            }
-                            throw ex;
-                        }
-                        //Read number of periods
-                        try
-                        {
-                            Comm.ReadValue(it, 9);
-                        }
-                        catch (Exception ex)
-                        {
-                            GXLogWriter.WriteLog(ex.Message);
-                            UpdateError(it, 9, ex);
-                            if (ex is GXDLMSException)
-                            {
-                                continue;
-                            }
-                            throw ex;
-                        }
-                    }
-                }
-                GXLogWriter.WriteLog("--- Reading scalers and units end. ---");
                 if (!UseLogicalNameReferencing)
                 {
                     GXLogWriter.WriteLog("--- Reading Access rights. ---");
@@ -717,6 +676,108 @@ namespace GXDLMSDirector
                     }
                     GXLogWriter.WriteLog("--- Reading Access rights end. ---");
                 }
+                GXLogWriter.WriteLog("--- Reading scalers and units. ---");
+                this.OnProgress(this, "Reading scalers and units.", cnt + pos + 1, 3 * cnt);
+                if ((Comm.client.NegotiatedConformance & Gurux.DLMS.Enums.Conformance.MultipleReferences) != 0)
+                {
+                    List<KeyValuePair<GXDLMSObject, int>> list = new List<KeyValuePair<GXDLMSObject, int>>();
+                    foreach (GXDLMSObject it in Objects)
+                    {
+                        if (it is GXDLMSRegister && (it.GetAccess(3) & AccessMode.Read) != 0)
+                        {
+                            list.Add(new KeyValuePair<GXDLMSObject, int>(it, 3));
+                        }
+                        if (it is GXDLMSDemandRegister && (it.GetAccess(4) & AccessMode.Read) != 0)
+                        {
+                            list.Add(new KeyValuePair<GXDLMSObject, int>(it, 4));
+                        }
+                    }
+                    if (list.Count != 0)
+                    {
+                        try
+                        {
+                            Comm.ReadList(list);
+                        }
+                        catch (Exception)
+                        {
+                            //Show error.
+                        }
+                    }
+                }
+                else
+                {
+                    for (pos = 0; pos != cnt; ++pos)
+                    {
+                        GXDLMSObject it = Objects[pos];
+                        if (it is GXDLMSRegister)
+                        {
+                            //Read scaler first.
+                            try
+                            {
+                                Comm.ReadValue(it, 3);
+                            }
+                            catch (Exception ex)
+                            {
+                                GXLogWriter.WriteLog(ex.Message);
+                                it.SetAccess(3, AccessMode.NoAccess);
+                                if (ex is GXDLMSException)
+                                {
+                                    continue;
+                                }
+                                throw ex;
+                            }
+                        }
+                        if (it is GXDLMSDemandRegister)
+                        {
+                            //Read scaler first.
+                            try
+                            {
+                                Comm.ReadValue(it, 4);
+                            }
+                            catch (Exception ex)
+                            {
+                                GXLogWriter.WriteLog(ex.Message);
+                                UpdateError(it, 4, ex);
+                                if (ex is GXDLMSException)
+                                {
+                                    continue;
+                                }
+                                throw ex;
+                            }
+                            //Read Period
+                            try
+                            {
+                                Comm.ReadValue(it, 8);
+                            }
+                            catch (Exception ex)
+                            {
+                                GXLogWriter.WriteLog(ex.Message);
+                                UpdateError(it, 8, ex);
+                                if (ex is GXDLMSException)
+                                {
+                                    continue;
+                                }
+                                throw ex;
+                            }
+                            //Read number of periods
+                            try
+                            {
+                                Comm.ReadValue(it, 9);
+                            }
+                            catch (Exception ex)
+                            {
+                                GXLogWriter.WriteLog(ex.Message);
+                                UpdateError(it, 9, ex);
+                                if (ex is GXDLMSException)
+                                {
+                                    continue;
+                                }
+                                throw ex;
+                            }
+                        }
+                    }
+                }
+                GXLogWriter.WriteLog("--- Reading scalers and units end. ---");
                 this.OnProgress(this, "Reading profile generic columns.", cnt, cnt);
                 foreach (Gurux.DLMS.Objects.GXDLMSProfileGeneric it in objs.GetObjects(ObjectType.ProfileGeneric))
                 {

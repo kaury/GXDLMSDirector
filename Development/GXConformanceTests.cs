@@ -25,7 +25,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the GNU General Public License for more details.
 //
-// More information of Gurux DLMS/COSEM Director: http://www.gurux.org/GXDLMSDirector
+// More information of Gurux DLMS/COSEM Director: https://www.gurux.org/GXDLMSDirector
 //
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
@@ -299,18 +299,25 @@ namespace GXDLMSDirector
                     }
                     catch (GXDLMSException ex)
                     {
+                        using (Stream stream = File.Open(Path.Combine(test.Results, "error.txt"), FileMode.Append))
+                        {
+                            using (TextWriter writer = new StreamWriter(stream))
+                            {
+                                writer.WriteLine(DateTime.Now + ";" + ot + ";" + ln + ";" + indexStr + ";" + index + ";" + ex.Message);
+                            }
+                        }
                         //Error is not shown for external tests.
                         if (obj != null)
                         {
                             if (ex.ErrorCode != 0)
                             {
                                 ErrorCode e = (ErrorCode)ex.ErrorCode;
-                                output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " failed: <a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
+                                output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " failed: <a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
                                 test.OnTrace(test, e + "\r\n");
                             }
                             else
                             {
-                                output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " <div class=\"tooltip\">failed:" + ex.Message);
+                                output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " <div class=\"tooltip\">failed:" + ex.Message);
                                 output.Errors.Add("<span class=\"tooltiptext\">");
                                 output.Errors.Add(ex.ToString());
                                 output.Errors.Add("</span></div>");
@@ -326,7 +333,14 @@ namespace GXDLMSDirector
                     }
                     catch (Exception ex)
                     {
-                        output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " <div class=\"tooltip\">failed:" + ex.Message);
+                        using (Stream stream = File.Open(Path.Combine(test.Results, "error.txt"), FileMode.Append))
+                        {
+                            using (TextWriter writer = new StreamWriter(stream))
+                            {
+                                writer.WriteLine(DateTime.Now + ";" + ot + ";" + ln + ";" + indexStr + ";" + index + ";" + ex.Message);
+                            }
+                        }
+                        output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " <div class=\"tooltip\">failed:" + ex.Message);
                         output.Errors.Add("<span class=\"tooltiptext\">");
                         output.Errors.Add(ex.ToString());
                         output.Errors.Add("</span></div>");
@@ -368,13 +382,13 @@ namespace GXDLMSDirector
                             if (lastExternalException != null)
                             {
                                 ErrorCode e = (ErrorCode)lastExternalException.ErrorCode;
-                                output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " failed: <a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
+                                output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " failed: <a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
                                 test.OnTrace(test, e + "\r\n");
                                 lastExternalException = null;
                             }
                             else
                             {
-                                output.Errors.Add(" <a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " " + indexStr + " " + index + " is <div class=\"tooltip\">invalid.");
+                                output.Errors.Add(" <a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " " + indexStr + " " + index + " is <div class=\"tooltip\">invalid.");
                                 output.Errors.Add("<span class=\"tooltiptext\">");
                                 output.Errors.Add("Expected:</b><br/>");
                                 output.Errors.Add(it.PduAsXml.Replace("<", "&lt;").Replace(">", "&gt;").Replace("\r\n", "<br/>"));
@@ -409,7 +423,14 @@ namespace GXDLMSDirector
                             }
                             catch (Exception ex)
                             {
-                                output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " <div class=\"tooltip\">failed:" + ex.Message);
+                                using (Stream stream = File.Open(Path.Combine(test.Results, "error.txt"), FileMode.Append))
+                                {
+                                    using (TextWriter writer = new StreamWriter(stream))
+                                    {
+                                        writer.WriteLine(DateTime.Now + ";" + ot + ";" + ln + ";" + indexStr + ";" + index + ";" + ex.Message);
+                                    }
+                                }
+                                output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + indexStr + index + " <div class=\"tooltip\">failed:" + ex.Message);
                                 output.Errors.Add("<span class=\"tooltiptext\">");
                                 output.Errors.Add(ex.ToString());
                                 output.Errors.Add("</span></div>");
@@ -474,7 +495,7 @@ namespace GXDLMSDirector
             if (lastExternalException != null)
             {
                 ErrorCode e = (ErrorCode)lastExternalException.ErrorCode;
-                output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " failed: <a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
+                output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " failed: <a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
                 test.OnTrace(test, e + "\r\n");
                 lastExternalException = null;
             }
@@ -488,7 +509,7 @@ namespace GXDLMSDirector
                     sb.Append(it.Value + "<br/>");
                 }
                 sb.Append("</span></div>");
-                sb.Append("&nbsp;" + converter.GetDescription(ln, succeeded[0].Key)[0] + "&nbsp;" + "<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a>.");
+                sb.Append("&nbsp;" + converter.GetDescription(ln, succeeded[0].Key)[0] + "&nbsp;" + "<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a>.");
                 output.Info.Add(sb.ToString());
             }
             if (obj != null)
@@ -671,9 +692,9 @@ namespace GXDLMSDirector
             List<GXConformanceTest> tests = (List<GXConformanceTest>)tmp2[0];
             GXConformanceSettings settings = (GXConformanceSettings)tmp2[1];
             GXConformanceParameters cp = null;
-            if (tmp2.Length > 2)
+            if (tmp2.Length > 3)
             {
-                cp = (GXConformanceParameters)tmp2[2];
+                cp = (GXConformanceParameters)tmp2[3];
             }
             GXConformanceTest test;
             GXDLMSDevice dev = null;
@@ -795,7 +816,7 @@ namespace GXDLMSDirector
                     {
                         if (((int)it & (int)client.ProposedConformance) != 0)
                         {
-                            sb.Append("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Conformance?" + it + ">" + it + "</a>, ");
+                            sb.Append("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Conformance?" + it + ">" + it + "</a>, ");
                         }
                     }
                     if (sb.Length != 0)
@@ -809,7 +830,7 @@ namespace GXDLMSDirector
                     {
                         if (((int)it & (int)client.NegotiatedConformance) != 0)
                         {
-                            sb.Append("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Conformance?" + it + ">" + it + "</a>, ");
+                            sb.Append("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Conformance?" + it + ">" + it + "</a>, ");
                         }
                     }
                     if (sb.Length != 0)
@@ -827,7 +848,7 @@ namespace GXDLMSDirector
                         {
                             if (it.Description == "Invalid")
                             {
-                                output.Errors.Add("Invalid OBIS code " + it.LogicalName + " for <a target=\"_blank\" href=http://www.gurux.fi/" + it.GetType().FullName + ">" + it.ObjectType + "</a>.");
+                                output.Errors.Add("Invalid OBIS code " + it.LogicalName + " for <a target=\"_blank\" href=https://www.gurux.fi/" + it.GetType().FullName + ">" + it.ObjectType + "</a>.");
                                 Console.WriteLine("------------------------------------------------------------");
                                 Console.WriteLine(it.LogicalName + ": Invalid OBIS code.");
                             }
@@ -996,7 +1017,7 @@ namespace GXDLMSDirector
                                     if (!found)
                                     {
                                         unknownDataTypes.Add(o.ObjectType);
-                                        output.Warnings.Add("<a target=\"_blank\" href=http://www.gurux.fi/" + o.GetType().FullName + ">" + o.ObjectType + "</a> is not tested.");
+                                        output.Warnings.Add("<a target=\"_blank\" href=https://www.gurux.fi/" + o.GetType().FullName + ">" + o.ObjectType + "</a> is not tested.");
                                     }
                                 }
                             }
@@ -1021,7 +1042,7 @@ namespace GXDLMSDirector
                                             //Check that value is not changed.
                                             if (Convert.ToString(expected) != Convert.ToString(actual))
                                             {
-                                                output.Errors.Add("Write <a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " is <div class=\"tooltip\">failed.");
+                                                output.Errors.Add("Write <a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " is <div class=\"tooltip\">failed.");
                                                 output.Errors.Add("<span class=\"tooltiptext\">");
                                                 output.Errors.Add("Expected:</b><br/>");
                                                 output.Errors.Add(Convert.ToString(expected).Replace("<", "&lt;").Replace(">", "&gt;").Replace("\r\n", "<br/>"));
@@ -1039,11 +1060,11 @@ namespace GXDLMSDirector
                                             if (ex.ErrorCode != 0)
                                             {
                                                 ErrorCode e = (ErrorCode)ex.ErrorCode;
-                                                output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " failed: <a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
+                                                output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " failed: <a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.ErrorCodes?" + e + ">" + e + "</a>)");
                                             }
                                             else
                                             {
-                                                output.Errors.Add("<a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " <div class=\"tooltip\">failed:" + ex.Message);
+                                                output.Errors.Add("<a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " <div class=\"tooltip\">failed:" + ex.Message);
                                                 output.Errors.Add("<span class=\"tooltiptext\">");
                                                 output.Errors.Add(ex.ToString().Replace("<", "&lt;").Replace(">", "&gt;").Replace("\r\n", "<br/>"));
                                                 output.Errors.Add("</span></div>");
@@ -1051,7 +1072,7 @@ namespace GXDLMSDirector
                                         }
                                         catch (Exception ex)
                                         {
-                                            output.Errors.Add("Write <a target=\"_blank\" href=http://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " <div class=\"tooltip\">failed. " + ex.Message);
+                                            output.Errors.Add("Write <a target=\"_blank\" href=https://www.gurux.fi/Gurux.DLMS.Objects.GXDLMS" + ot + ">" + ot + "</a> " + ln + " attribute " + index + " <div class=\"tooltip\">failed. " + ex.Message);
                                             output.Errors.Add("<span class=\"tooltiptext\">");
                                             output.Errors.Add(ex.ToString().Replace("<", "&lt;").Replace(">", "&gt;").Replace("\r\n", "<br/>"));
                                             output.Errors.Add("</span></div>");
@@ -1115,6 +1136,12 @@ namespace GXDLMSDirector
                     {
                         TestAssociationLn(settings, dev, output);
                     }
+#if DEBUG
+                    if (!settings.ExcludeClockTests)
+                    {
+                        TestClock(settings, dev, output);
+                    }
+#endif //DEBUG
 
                     if (dev.Comm.payload != 0)
                     {
@@ -1140,6 +1167,13 @@ namespace GXDLMSDirector
                     output.Errors.Add(ex.Message);
                     test.ErrorLevel = 2;
                     test.OnError(test, ex);
+                    using (Stream stream = File.Open(Path.Combine(test.Results, "error.txt"), FileMode.Append))
+                    {
+                        using (TextWriter writer = new StreamWriter(stream))
+                        {
+                            writer.WriteLine(DateTime.Now + ";" + ex.Message);
+                        }
+                    }
                 }
                 finally
                 {
@@ -5643,6 +5677,278 @@ namespace GXDLMSDirector
             }
         }
 
+        private static void TestClock(GXConformanceSettings settings, GXDLMSDevice dev, GXOutput output)
+        {
+            GXDLMSObjectCollection objects = dev.Comm.client.Objects.GetObjects(ObjectType.Clock);
+            foreach (GXDLMSClock it in objects)
+            {
+                //If settings time and time zone is allowed.
+                if (it.GetAccess(2) == AccessMode.ReadWrite && it.GetAccess(3) == AccessMode.ReadWrite)
+                {
+                    //Read old values.
+                    dev.Comm.ReadValue(it, 3);
+                    dev.Comm.ReadValue(it, 2);
+                    DateTime time = DateTime.Now;
+                    int timeZone = it.TimeZone;
+                    try
+                    {
+                        //Update new time using current time.
+                        GXDateTime newTime = new GXDateTime(DateTime.Now);
+                        it.Time = newTime;
+                        DateTime start = DateTime.Now;
+                        try
+                        {
+                            if (dev.Comm.client.UtcTimeZone)
+                            {
+                                it.TimeZone = (int)TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes;
+                            }
+                            else
+                            {
+                                it.TimeZone = -(int)TimeZoneInfo.Local.BaseUtcOffset.TotalMinutes;
+                            }
+                            output.Info.Add("Set new Time zone:" + it.TimeZone);
+                            dev.Comm.Write(it, 3);
+                            dev.Comm.Write(it, 2);
+                            newTime.Skip |= DateTimeSkips.Second;
+                            dev.Comm.ReadValue(it, 2);
+                            time = it.Time;
+                            if (newTime.Compare(it.Time.Value.Add(DateTime.Now - start).LocalDateTime) != 0)
+                            {
+                                output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock1\">Clock test #1 failed</a>. Failed to set new time using current time zone. Expected: " + newTime + " Actual: " + it.Time.Value.Add(DateTime.Now - start).LocalDateTime);
+                                start = time = DateTime.Now;
+                            }
+                            else
+                            {
+                                output.Info.Add("Setting new time succeeded using current time zone.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock1\">Clock test #1 failed</a>. Failed to set new time using current time zone. Meter returns exception. " + ex.Message);
+                            start = time = DateTime.Now;
+                        }
+                        //Update new time using UTC time.
+                        newTime = new GXDateTime(DateTime.Now.ToUniversalTime());
+                        newTime.Skip |= DateTimeSkips.Second;
+                        it.Time = newTime;
+                        try
+                        {
+                            dev.Comm.Write(it, 2);
+                            dev.Comm.ReadValue(it, 2);
+                            if (newTime.Compare(it.Time.Value.Add(DateTime.Now - start).LocalDateTime) != 0)
+                            {
+                                output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock2\">Clock test #2 failed</a>. Failed to set new time using UTC time. Expected: " + newTime + " Actual: " + it.Time.Value.Add(DateTime.Now - start).LocalDateTime);
+                            }
+                            else
+                            {
+                                output.Info.Add("Setting new time succeeded using UTC time zone.");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock2\">Clock test #2 failed</a>. Failed to set new time using UTC time zone. Meter returns exception. " + ex.Message);
+                        }
+
+                        /*
+                        //Update new time without timezone.
+                        it.Time.Skip |= DateTimeSkips.Deviation;
+                        dev.Comm.Write(it, 2);
+                        dev.Comm.ReadValue(it, 2);
+                        if (newTime.Compare(it.Time.Value.Add(DateTime.Now - start).DateTime) != 0)
+                        {
+                            output.Errors.Add("Failed to set new time using without time zone. Expected: " + newTime + " Actual: " + it.Time.Value.Add(DateTime.Now - start).DateTime);
+                        }
+                        */
+
+                        //Check DST.
+                        if (it.GetAccess(8) == AccessMode.ReadWrite && (it.GetAccess(7) & AccessMode.Read) != 0)
+                        {
+                            dev.Comm.ReadValue(it, 8);
+                            dev.Comm.ReadValue(it, 7);
+                            bool dst = it.Enabled;
+                            int deviation = it.Deviation;
+                            if (dst)
+                            {
+                                output.Info.Add("DST is in use and deviation is " + deviation + ".");
+                            }
+                            else
+                            {
+                                output.Info.Add("DST is not in use. Devitation is " + deviation + ".");
+                            }
+                            if (deviation != 0)
+                            {
+                                //Flip DST.
+                                it.Enabled = !dst;
+                                try
+                                {
+                                    dev.Comm.Write(it, 8);
+                                }
+                                catch (Exception)
+                                {
+                                    output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock3\">Clock test #3 failed</a>. Clock test failed. Failed to enable DST.");
+                                }
+                                //Read time.
+                                dev.Comm.ReadValue(it, 2);
+                                GXDateTime tmp = new GXDateTime(it.Time);
+                                tmp.Skip |= DateTimeSkips.Second;
+                                if (tmp.Compare(time.Add(DateTime.Now - start)) != 0)
+                                {
+                                    //Setting current time
+                                    output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock3\">Clock test #3 failed</a>. Clock test failed. Time is not valid if DST is changed. Expected: " + time.Add(DateTime.Now - start) + " Actual: " + tmp);
+                                }
+                                else
+                                {
+                                    output.Info.Add("Meter can change DST and time is updated correctly.");
+                                }
+                                //Enable DST back.
+                                if (!it.Enabled)
+                                {
+                                    it.Enabled = dst;
+                                    try
+                                    {
+                                        dev.Comm.Write(it, 8);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock3\">Clock test #3 failed</a>. Clock test failed. Failed to set DST.");
+                                    }
+                                }
+                            }
+                            //Change time and check is DST flag set.
+                            if ((it.GetAccess(5) & AccessMode.Read) != 0 && (it.GetAccess(6) & AccessMode.Read) != 0)
+                            {
+                                dev.Comm.ReadValue(it, 4);
+                                dev.Comm.ReadValue(it, 5);
+                                dev.Comm.ReadValue(it, 6);
+                                GXDateTime begin = it.Begin;
+                                GXDateTime end = it.End;
+                                bool dst1;
+                                //Read time.
+                                dev.Comm.ReadValue(it, 2);
+                                GXDateTime tmp = new GXDateTime(it.Time);
+                                if (begin.Compare(tmp) != 1 && end.Compare(tmp) != -1)
+                                {
+                                    output.Info.Add("Meter is in DST time.");
+                                    if ((it.Status & ClockStatus.DaylightSavingActive) == 0)
+                                    {
+                                        output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock4\">Clock test #4 failed</a>. Meter is in DST, but DST status flag is not set.");
+                                    }
+                                    //Move meter to normal time.
+                                    it.Time = new GXDateTime(end.Value.AddDays(7));
+                                    dst1 = false;
+                                }
+                                else
+                                {
+                                    output.Info.Add("Meter is in normal time.");
+                                    if ((it.Status & ClockStatus.DaylightSavingActive) != 0)
+                                    {
+                                        output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock4\">Clock test #4 failed</a>. Meter is in normal time, but DST status flag is set.");
+                                    }
+                                    //Move meter to DST time.
+                                    it.Time = new GXDateTime(begin.Value.AddDays(7));
+                                    dst1 = true;
+                                }
+                                //Write new time.
+                                dev.Comm.Write(it, 2);
+                                //Check that clock status is changed.
+                                dev.Comm.ReadValue(it, 4);
+                                if (((it.Status & ClockStatus.DaylightSavingActive) != 0 && !dst1) ||
+                                     ((it.Status & ClockStatus.DaylightSavingActive) == 0 && dst1))
+                                {
+                                    if (dst1)
+                                    {
+                                        output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock4\">Clock test #4 failed</a>. Meter is in DST, but DST status flag is not set.");
+                                    }
+                                    else
+                                    {
+                                        output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock4\">Clock test #4 failed</a>. Meter is in normal time, but DST status flag is set.");
+                                    }
+                                }
+                                else
+                                {
+                                    if (dst1)
+                                    {
+                                        output.Info.Add("Time is changed to DST time, and DST status flag is set.");
+                                    }
+                                    else
+                                    {
+                                        output.Info.Add("Time is changed to normal time and DST status flag is not set.");
+                                    }
+                                }
+                                //Move meter to current time.
+                                it.Time = new GXDateTime(time.Add(DateTime.Now - start));
+                                dev.Comm.Write(it, 2);
+                            }
+                            else
+                            {
+                                output.Info.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock4\">Clock test #4 is not tested</a>. Changind DST begin and end time is not tested.");
+                            }
+                            //Return DST back.
+                            it.Enabled = dst;
+                            try
+                            {
+                                dev.Comm.Write(it, 8);
+                            }
+                            catch (Exception)
+                            {
+                                output.Errors.Add("Clock test failed. Failed to set DST.");
+                            }
+                        }
+                        //Change time zone to UTC.
+                        if (it.TimeZone != 0)
+                        {
+                            output.Info.Add("Time zone of the meter:" + it.TimeZone);
+                            it.TimeZone = 0;
+                            dev.Comm.Write(it, 3);
+                            //Read time.
+                            dev.Comm.ReadValue(it, 2);
+                            GXDateTime tmp = new GXDateTime(it.Time);
+                            tmp.Skip |= DateTimeSkips.Second;
+                            if (tmp.Compare(time.Add(DateTime.Now - start)) != 0)
+                            {
+                                //Setting UTC time
+                                output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock5\">Clock test #5 failed</a>. Clock test failed. Time is not valid if time zone is changed to UTC. Expected: " + time.Add(DateTime.Now - start) + " Actual: " + tmp);
+                            }
+                            else
+                            {
+                                output.Info.Add("Meter can change time zone to UTC and time is updated correctly.");
+                            }
+                        }
+                        else
+                        {
+                            it.TimeZone = (int)TimeZoneInfo.Utc.GetUtcOffset(DateTime.Now).TotalMinutes;
+                            output.Info.Add("Time zone of the meter is UTC. Try to set it to " + it.TimeZone);
+                            dev.Comm.Write(it, 3);
+                            //Read time.
+                            dev.Comm.ReadValue(it, 2);
+                            GXDateTime tmp = new GXDateTime(it.Time);
+                            tmp.Skip |= DateTimeSkips.Second;
+                            if (tmp.Compare(time.Add(DateTime.Now - start)) != 0)
+                            {
+                                //Setting current time
+                                output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock5\">Clock test #5 failed</a>.  Clock test failed. Time is not valid if time zone is changed from UTC. Expected: " + time.Add(DateTime.Now - start) + " Actual: " + tmp);
+                            }
+                            else
+                            {
+                                output.Info.Add("Meter can change time zone from UTC and time is updated correctly.");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        output.Errors.Add("<a href=\"https://www.gurux.fi/gurux.dlms.ctt.tests#clock1\">Clock test failed</a>. " + ex.Message);
+                    }
+                    it.TimeZone = timeZone;
+                    dev.Comm.Write(it, 3);
+                }
+                else
+                {
+                    output.Info.Add("Clock time access for " + it.LogicalName + " is " + it.GetAccess(2));
+                    output.Info.Add("Clock time zone access for " + it.LogicalName + " is " + it.GetAccess(3));
+                }
+            }
+        }
+
         /// <summary>
         /// Test image transfer.
         /// </summary>
@@ -5688,7 +5994,19 @@ namespace GXDLMSDirector
                         GXReplyData reply = new GXReplyData();
                         dev.Comm.ReadDataBlock(img.ImageTransferInitiate(dev.Comm.client, settings.ImageIdentifier, image.Length), "", 1, reply);
                         reply.Clear();
-
+                        int cnt1 = 0;
+                        do
+                        {
+                            dev.Comm.ReadValue(img, 6);
+                            if (++cnt1 > 10)
+                            {
+                                throw new Exception("Failed to read Image transfer status after image transfer initiate.");
+                            }
+                            if (img.ImageTransferStatus == ImageTransferStatus.NotInitiated)
+                            {
+                                Thread.Sleep(2000);
+                            }
+                        } while (img.ImageTransferStatus == ImageTransferStatus.NotInitiated);
                         //Check ImageTransferredBlocksStatus.
                         dev.Comm.ReadValue(img, 3);
                         if (img.ImageTransferredBlocksStatus != null)
@@ -5708,11 +6026,6 @@ namespace GXDLMSDirector
                         {
                             return;
                         }
-                        do
-                        {
-                            dev.Comm.ReadValue(img, 6);
-                        } while (img.ImageTransferStatus == ImageTransferStatus.NotInitiated);
-
                         if (img.ImageTransferStatus != ImageTransferStatus.TransferInitiated)
                         {
                             error = true;
@@ -5919,7 +6232,12 @@ namespace GXDLMSDirector
                                 reply.Error = (short)ex.ErrorCode;
                             }
                             //Image activate is not checked if image activate timeout is zero.
-                            if (settings.ImageActivateWaitTime.TotalSeconds != 0)
+                            if (settings.ImageActivateWaitTime.TotalSeconds == 0)
+                            {
+                                //Disconnect is not send because meter is restarted and not answering.
+                                dev.Comm.media.Close();
+                            }
+                            else
                             {
                                 if (reply.Error == (short)ErrorCode.TemporaryFailure)
                                 {

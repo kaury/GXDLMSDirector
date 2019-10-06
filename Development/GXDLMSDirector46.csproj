@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GXDLMSDirector</RootNamespace>
     <AssemblyName>GXDLMSDirector</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>GXDLMSDirector.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -48,17 +48,19 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET46</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET46</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>CAC4A554188741D10E4F149122BF5D97F168A782</ManifestCertificateThumbprint>
@@ -102,6 +104,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -110,6 +113,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -119,6 +123,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -127,27 +132,44 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gurux.Common, Version=8.1.1907.301, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Gurux.Common.8.1.1907.301\lib\net40\Gurux.Common.dll</HintPath>
+      <HintPath>packages\Gurux.Common.8.1.1907.301\lib\net45\Gurux.Common.dll</HintPath>
     </Reference>
     <Reference Include="Gurux.DLMS, Version=9.0.1909.2501, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Gurux.DLMS.9.0.1909.2501\lib\net40\Gurux.DLMS.dll</HintPath>
+      <HintPath>packages\Gurux.DLMS.9.0.1909.2501\lib\net45\Gurux.DLMS.dll</HintPath>
     </Reference>
     <Reference Include="Gurux.DLMS.UI, Version=9.0.1909.2501, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Gurux.DLMS.UI.9.0.1909.2501\lib\portable-win+net40\Gurux.DLMS.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Gurux.MQTT, Version=8.1.1909.601, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Gurux.MQTT.8.1.1909.601\lib\net46\Gurux.MQTT.dll</HintPath>
+    </Reference>
     <Reference Include="Gurux.Net, Version=8.1.1909.601, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Gurux.Net.8.1.1909.601\lib\net40\Gurux.Net.dll</HintPath>
+      <HintPath>packages\Gurux.Net.8.1.1909.601\lib\net45\Gurux.Net.dll</HintPath>
     </Reference>
     <Reference Include="Gurux.Serial, Version=8.1.1909.601, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Gurux.Serial.8.1.1909.601\lib\net40\Gurux.Serial.dll</HintPath>
+      <HintPath>packages\Gurux.Serial.8.1.1909.601\lib\net45\Gurux.Serial.dll</HintPath>
     </Reference>
     <Reference Include="Gurux.Terminal, Version=8.1.1909.1201, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Gurux.Terminal.8.1.1909.1201\lib\net40\Gurux.Terminal.dll</HintPath>
+      <HintPath>packages\Gurux.Terminal.8.1.1909.1201\lib\net45\Gurux.Terminal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="MQTTnet, Version=3.0.2.0, Culture=neutral, PublicKeyToken=b69712f52770c0a7, processorArchitecture=MSIL">
+      <HintPath>packages\MQTTnet.3.0.2\lib\net452\MQTTnet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.AppContext.4.1.0\lib\net46\System.AppContext.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Console, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Console.4.0.0\lib\net46\System.Console.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -155,13 +177,64 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.DiagnosticSource.4.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Globalization.Calendars, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Globalization.Calendars.4.0.1\lib\net46\System.Globalization.Calendars.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.4.1.0\lib\net46\System.IO.Compression.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.Compression.ZipFile.4.0.1\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.4.0.1\lib\net46\System.IO.FileSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="System.Messaging" />
+    <Reference Include="System.Net.Http, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Http.4.1.0\lib\net46\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Security, Version=4.0.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Security.4.3.2\lib\net46\System.Net.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.Sockets.4.1.0\lib\net46\System.Net.Sockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebSockets, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.WebSockets.4.3.0\lib\net46\System.Net.WebSockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebSockets.Client, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Net.WebSockets.Client.4.3.2\lib\net46\System.Net.WebSockets.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net46\System.Security.Cryptography.Algorithms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net46\System.Security.Cryptography.X509Certificates.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GXConformanceEditor.cs" />
@@ -318,9 +391,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
