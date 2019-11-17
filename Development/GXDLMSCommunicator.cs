@@ -4,8 +4,8 @@
 //
 //
 //
-// Version:         $Revision: 10970 $,
-//                  $Date: 2019-09-10 11:12:32 +0300 (ti, 10 syys 2019) $
+// Version:         $Revision: 11030 $,
+//                  $Date: 2019-10-22 12:49:43 +0300 (ti, 22 loka 2019) $
 //                  $Author: gurux01 $
 //
 // Copyright (c) Gurux Ltd
@@ -977,6 +977,10 @@ namespace GXDLMSDirector
                 }
                 else
                 {
+                    if (media is IGXMedia2)
+                    {
+                        ((IGXMedia2)media).AsyncWaitTime = (uint) parent.WaitTime;
+                    }
                     media.Open();
                 }
             }
@@ -1033,7 +1037,7 @@ namespace GXDLMSDirector
                             GXDLMSData d = new GXDLMSData(parent.FrameCounter);
                             ReadDLMSPacket(Read(d, 2), reply);
                             client.UpdateValue(d, 2, reply.Value);
-                            client.Ciphering.InvocationCounter = parent.InvocationCounter = Convert.ToUInt32(d.Value);
+                            client.Ciphering.InvocationCounter = parent.InvocationCounter = 1 + Convert.ToUInt32(d.Value);
                             reply.Clear();
                             ReadDataBlock(DisconnectRequest(), "Disconnect request", reply);
                         }
@@ -1058,12 +1062,12 @@ namespace GXDLMSDirector
                     try
                     {
                         reply.Clear();
-                        ReadDataBlock(data, "Send SNRM request.", 1, 1, reply);
+                        ReadDataBlock(data, "Send SNRM request.", 1, parent.ResendCount, reply);
                     }
                     catch (TimeoutException)
                     {
                         reply.Clear();
-                        ReadDataBlock(DisconnectRequest(true), "Send Disconnect request.", 1, 1, reply);
+                        ReadDataBlock(DisconnectRequest(true), "Send Disconnect request.", 1, parent.ResendCount, reply);
                         reply.Clear();
                         ReadDataBlock(data, "Send SNRM request.", reply);
                     }
