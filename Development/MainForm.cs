@@ -5,8 +5,8 @@
 //
 //
 //
-// Version:         $Revision: 11125 $,
-//                  $Date: 2019-11-14 12:00:13 +0200 (to, 14 marras 2019) $
+// Version:         $Revision: 11421 $,
+//                  $Date: 2020-01-31 14:53:39 +0200 (pe, 31 tammi 2020) $
 //                  $Author: gurux01 $
 //
 // Copyright (c) Gurux Ltd
@@ -182,6 +182,9 @@ namespace GXDLMSDirector
         public MainForm()
         {
             InitializeComponent();
+            eventsTranslator.SystemTitle = GXCommon.HexToBytes(Properties.Settings.Default.NotifySystemTitle);
+            eventsTranslator.BlockCipherKey = GXCommon.HexToBytes(Properties.Settings.Default.NotifyBlockCipherKey);
+
             CancelBtn.Enabled = false;
             traceTranslator = new GXDLMSTranslator(TranslatorOutputType.SimpleXml);
 
@@ -2050,7 +2053,7 @@ namespace GXDLMSDirector
                         TraceView.AppendText(trace + " " + GXCommon.ToHex(data, true) + Environment.NewLine);
                     }
                 }
-                else if (data != null && (traceLevel == 2 || traceLevel == 3))
+                else if (data != null && data.Length != 0 && (traceLevel == 2 || traceLevel == 3))
                 {
                     //Show data as xml or pdu.
                     receivedTraceData.Set(data);
@@ -2822,7 +2825,7 @@ namespace GXDLMSDirector
             if (activeDC != null)
             {
                 Devices.Clear();
-                Devices.AddRange(activeDC.GetDevices(null));
+                Devices.AddRange((GXDLMSMeter[])activeDC.GetDevices(null));
                 TreeNode node = ObjectTree.Nodes[0];
                 node.Tag = Devices;
             }
@@ -3185,7 +3188,14 @@ namespace GXDLMSDirector
 
         void OnGetDevices(string path)
         {
-            LoadFile(null);
+            try
+            {
+                LoadFile(null);
+            }
+            catch (Exception ex)
+            {
+                GXDLMS.Common.Error.ShowError(this, ex);
+            }
         }
 
 
@@ -3237,7 +3247,7 @@ namespace GXDLMSDirector
                         List<KeyValuePair<GXDLMSObject, byte>> list = new List<KeyValuePair<GXDLMSObject, byte>>();
                         foreach (GXDLMSObject obj in items)
                         {
-                            foreach (byte index in (obj as IGXDLMSBase).GetAttributeIndexToRead(ForceRefreshBtn.Checked))
+                            foreach (byte index in (obj as IGXDLMSBase).GetAttributeIndexToRead(true))
                             {
                                 if (!(obj is GXDLMSProfileGeneric) || (index != 2 || (obj as GXDLMSProfileGeneric).AccessSelector == AccessRange.All))
                                 {
@@ -3425,7 +3435,7 @@ namespace GXDLMSDirector
         {
             if (activeDC != null)
             {
-                GXDLMSMeter dev2 = activeDC.AddDevice(this);
+                GXDLMSMeter dev2 = (GXDLMSMeter)activeDC.AddDevice(this);
                 if (dev2 != null)
                 {
                     dev2.Objects.Tag = dev2;
@@ -4685,10 +4695,12 @@ namespace GXDLMSDirector
         {
             try
             {
-                GXSettingsDlg dlg = new GXSettingsDlg(events);
+                GXSettingsDlg dlg = new GXSettingsDlg(events, eventsTranslator);
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
                     Properties.Settings.Default.EventsSettings = events.Settings;
+                    Properties.Settings.Default.NotifySystemTitle = GXCommon.ToHex(eventsTranslator.SystemTitle, false);
+                    Properties.Settings.Default.NotifyBlockCipherKey = GXCommon.ToHex(eventsTranslator.BlockCipherKey, false);
                 }
             }
             catch (Exception Ex)
@@ -6295,6 +6307,19 @@ namespace GXDLMSDirector
         private void DataConcentratorsMnu_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void dLMSTranslatorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DLMSTranslatorForm dlg = new DLMSTranslatorForm();
+                dlg.ShowDialog(this);
+            }
+            catch (Exception Ex)
+            {
+                Error.ShowError(this, Ex);
+            }
         }
     }
 }

@@ -4,8 +4,8 @@
 //
 //
 //
-// Version:         $Revision: 11030 $,
-//                  $Date: 2019-10-22 12:49:43 +0300 (ti, 22 loka 2019) $
+// Version:         $Revision: 11324 $,
+//                  $Date: 2020-01-12 17:20:31 +0200 (Sun, 12 Jan 2020) $
 //                  $Author: gurux01 $
 //
 // Copyright (c) Gurux Ltd
@@ -320,7 +320,6 @@ namespace GXDLMSDirector
                 }
                 while (!succeeded && pos != tryCount);
                 rd = new GXByteBuffer(p.Reply);
-                int msgPos = 0;
                 try
                 {
                     pos = 0;
@@ -337,7 +336,7 @@ namespace GXDLMSDirector
                                 {
                                     parent.OnEvent(media, new ReceiveEventArgs(rd.Array(), media.ToString()));
                                 }
-                                msgPos = rd.Position;
+                                rd.Trim();
                                 notify.Clear();
                                 p.Eop = eop;
                             }
@@ -346,7 +345,7 @@ namespace GXDLMSDirector
                         //If Eop is not set read one byte at time.
                         if (p.Eop == null)
                         {
-                            p.Count = 1;
+                            p.Count = client.GetFrameSize(rd);
                         }
                         if (!media.IsOpen)
                         {
@@ -377,7 +376,6 @@ namespace GXDLMSDirector
                             throw new TimeoutException(err);
                         }
                         rd.Set(p.Reply);
-                        rd.Position = msgPos;
                     }
                 }
                 catch (Exception ex)
@@ -979,7 +977,7 @@ namespace GXDLMSDirector
                 {
                     if (media is IGXMedia2)
                     {
-                        ((IGXMedia2)media).AsyncWaitTime = (uint) parent.WaitTime;
+                        ((IGXMedia2)media).AsyncWaitTime = (uint)parent.WaitTime;
                     }
                     media.Open();
                 }
@@ -1444,7 +1442,7 @@ namespace GXDLMSDirector
                         }
                         else if (CurrentProfileGeneric.AccessSelector == AccessRange.Entry)
                         {
-                            tmp = client.ReadRowsByEntry(CurrentProfileGeneric, Convert.ToInt32(CurrentProfileGeneric.From), Convert.ToInt32(CurrentProfileGeneric.To));
+                            tmp = client.ReadRowsByEntry(CurrentProfileGeneric, Convert.ToUInt32(CurrentProfileGeneric.From), Convert.ToUInt32(CurrentProfileGeneric.To));
                             ReadDataBlock(tmp, "Reading profile generic data " + CurrentProfileGeneric.Name, 1, reply);
                         }
                         else //Read all.
@@ -1632,9 +1630,9 @@ namespace GXDLMSDirector
             {
                 ReadDataBlock(it, "", 1, 1, reply);
                 //Value is null if data is send in multiple frames.
-                if (reply.Value is List<object>)
+                if (reply.Value is IEnumerable<object>)
                 {
-                    values.AddRange((List<object>)reply.Value);
+                    values.AddRange((IEnumerable<object>)reply.Value);
                 }
                 reply.Clear();
             }
